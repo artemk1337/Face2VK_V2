@@ -1,4 +1,5 @@
 private_configurations.py
+**/vk_config.v2.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
