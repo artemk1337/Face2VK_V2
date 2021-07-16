@@ -66,8 +66,10 @@ class VKParserHandler:
 
     def parse_user_pages(self, ids: list):
         """
-        :param ids:
-        :return:
+        Parsing main info from user pages.
+        :param ids: List of user ids.
+        :return: List with dictionaries contained user info.
+            Format: (list) [ (dict) {...}, ...]
         """
         def parse_user_pages_1000_ids(ids1000: list):
             assert len(ids1000) <= 1000, ValueError("Len `ids1000` should be <= 1000")
@@ -84,8 +86,9 @@ class VKParserHandler:
 
     def parse_user_photos(self, ids: list):
         """
-        :param ids:
-        :return:
+        :param ids: List of user ids.
+        :return: Dictionary with albums.
+            Format: (dict) { (int) user_id: ( (class) album `wall`, (class) album `profile`)}
         """
         def parse_album(user_id: int, album: str):
             return pool.method('photos.get', {
@@ -97,6 +100,13 @@ class VKParserHandler:
         with vk_api.VkRequestsPool(self.vk_session) as pool:
             res = {user_id: (parse_album(user_id, 'wall'), parse_album(user_id, 'profile')) for user_id in ids}
         return res
+
+    def parse_user_ids_groups(self, ids: list):
+        """
+        :param ids:
+        :return:
+        """
+        pass
 
 
 class ParsingDataHandler(VKParserHandler):
@@ -143,9 +153,11 @@ if __name__ == "__main__":
     # ids = [2, 293990229, 170737642]
     # print(vk_parser.parse_user_friends(ids))
     # print(vk_parser.parse_user_pages(ids))
+
     # print(vk_parser.parse_user_photos(ids))
     pdh = ParsingDataHandler(vk_session)
     res = pdh.parse_ids([i for i in range(1, 100)] + [170737642, 293990229])
     # res = pdh.parse_user_photos([1, 2, 170737642, 293990229])
     # res = pdh.parse_user_photos([293990229])[293990229][0].result['items'][1]['sizes'][-1]['url']
     print(res)
+    print(help(pdh.parse_user_photos))
